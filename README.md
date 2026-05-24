@@ -1,112 +1,203 @@
-# Kuliner Backend API v2 🍽️
+# 🍽️ Kuliner UKL System (Sistem Kasir Restoran)
 
-Backend REST API untuk Sistem Kasir Kuliner (Uji Kompetensi Keahlian - UKL). Dibuat menggunakan **Node.js**, **Express.js**, **Prisma ORM**, dan database **MySQL**. Menggunakan autentikasi berbasis **JWT (JSON Web Token)** dengan otorisasi berbasis Role (`ADMIN` dan `KASIR`).
-
----
-
-## 🛠️ Langkah-Langkah Menjalankan Backend
-
-### 1. Prasyarat (Prerequisites)
-Pastikan Anda sudah menginstal:
-* [Node.js](https://nodejs.org/) (versi 16 atau lebih baru)
-* MySQL Server (XAMPP, Laragon, Docker, atau MySQL Installer)
+Sistem Kasir Kuliner adalah aplikasi fullstack yang dikembangkan sebagai proyek Uji Kompetensi Keahlian (UKL). Sistem ini dirancang untuk memfasilitasi operasional restoran/kafe dengan dua hak akses utama:
+* 👑 **ADMIN**: Mengelola data user (kasir), mengelola item menu makanan/minuman/snack, dan memantau laporan statistik transaksi penjualan.
+* 💼 **KASIR**: Melakukan transaksi pesanan pelanggan, memperbarui status pesanan, dan mencatat riwayat transaksi.
 
 ---
 
-### 2. Kloning & Masuk ke Direktori Project
-Masuk ke folder backend ini di terminal Anda:
-```bash
-cd kuliner-backend-v2
-```
+## 📂 Struktur Project Workspace
 
----
-
-### 3. Instalasi Dependency
-Instal semua package node_modules yang dibutuhkan:
-```bash
-npm install
-```
-
----
-
-### 4. Konfigurasi Environment (`.env`)
-Salin file konfigurasi environment dari `.env.example`:
-```bash
-copy .env.example .env
-```
-*(atau buat file `.env` baru jika menggunakan MacOS/Linux: `cp .env.example .env`)*
-
-Buka file `.env` yang baru dibuat dan sesuaikan pengaturannya:
-```env
-# URL koneksi database MySQL Anda
-DATABASE_URL="mysql://root:@127.0.0.1:3306/kuliner_db"
-
-# Port Server
-PORT=3000
-NODE_ENV=development
-
-# JWT Configuration (Ganti secret key dengan string yang panjang dan aman)
-JWT_SECRET="isi_dengan_string_random_yang_sangat_panjang_dan_rahasia"
-JWT_EXPIRES_IN="8h"
-```
-> ⚠️ **Catatan Port MySQL:** Sesuaikan port pada `DATABASE_URL` (biasanya `3306` untuk default XAMPP/MySQL, atau `3307` jika Anda mengubah konfigurasinya). Pastikan database server (MySQL) sudah berjalan.
-
----
-
-### 5. Sinkronisasi Database (Prisma db push)
-Jalankan perintah berikut untuk membuat database `kuliner_db` dan membuat tabel-tabel secara otomatis berdasarkan skema Prisma:
-```bash
-npm run db:push
-```
-
----
-
-### 6. Seeding Data Awal (Default Users & Menus)
-Gunakan seeder bawaan untuk mengisi data awal (2 User default & 9 item Menu):
-```bash
-npm run db:seed
-```
-* **Akun Default setelah Seeding:**
-  * **Admin:** username: `admin` | password: `password123`
-  * **Kasir:** username: `kasir1` | password: `password123`
-
----
-
-### 7. Jalankan Server
-* **Mode Development (dengan reload otomatis menggunakan Nodemon):**
-  ```bash
-  npm run dev
-  ```
-* **Mode Production:**
-  ```bash
-  npm start
-  ```
-
-Server akan berjalan di: **`http://localhost:3000`**
-
----
-
-## 🧪 Menguji API dengan Postman
-Gunakan file **`Kuliner-UKL.postman_collection.json`** yang sudah disediakan di folder root backend ini:
-1. Buka aplikasi **Postman**.
-2. Klik **Import** -> pilih file `Kuliner-UKL.postman_collection.json`.
-3. Jalankan request **Login Admin** atau **Login Kasir**. Token JWT akan disimpan otomatis secara dinamis ke variabel koleksi Postman (`token`) untuk mengotorisasi request selanjutnya.
-
----
-
-## 📂 Struktur Folder Backend
 ```text
-kuliner-backend-v2/
-├── prisma/
-│   ├── schema.prisma   # Skema Database (tabel User, Menu, Pesanan, ItemPesanan)
-│   └── seed.js         # Script seeder data dummy
-├── src/
-│   ├── controllers/    # Logika bisnis endpoint (auth, user, menu, pesanan, laporan)
-│   ├── middlewares/    # Custom middlewares (auth JWT, errorHandler, validateBody)
-│   ├── routes/         # Routing URL API express
-│   ├── utils/          # Helper utilities (koneksi prisma client, template response JSON)
-│   └── server.js       # Entry point utama aplikasi express
-├── .env                # File konfigurasi sensitif (diabaikan oleh git)
-├── package.json        # Manifest file dependency Node.js
-└── Kuliner-UKL.postman_collection.json # File collection Postman
+Kuliner-UKL/
+├── kuliner-backend-v2/     # Folder Project Backend (Node.js + Express + Prisma)
+│   ├── Kuliner-UKL.postman_collection.json # File uji coba API Postman
+│   └── README.md           # Petunjuk detail instalasi & menjalankan backend
+│
+└── kuliner-frontend-v2/    # Folder Project Frontend (Rekomendasi Arsitektur React)
+    ├── public/
+    └── src/                # Kode sumber frontend
 ```
+
+---
+
+## ⚙️ 1. Setup & Menjalankan Backend
+
+Untuk langkah-langkah detail penyiapan database, pengisian data awal (seeder), dan menjalankan server backend, silakan baca dokumentasi backend secara terpisah di:
+👉 **[README Backend (kuliner-backend-v2)](file:///d:/SMK%20Telkom%20Sandhy%20Putra%20Malang/XI%20RPL1/Fullstack/Kuliner-UKL/kuliner-backend-v2/README.md)**
+
+---
+
+## 💻 2. Rekomendasi Struktur & Arsitektur Frontend
+
+Jika Anda membangun bagian Frontend menggunakan **React.js + Vite + TailwindCSS**, berikut adalah rekomendasi struktur folder modular yang rapi, aman, dan mudah dikembangkan:
+
+### 📂 Struktur Folder Frontend (`kuliner-frontend-v2`)
+```text
+kuliner-frontend-v2/
+├── public/
+│   └── logo.png            # Aset statis publik
+├── src/
+│   ├── assets/             # Gambar, ikon, ilustrasi lokal
+│   ├── components/         # Komponen UI Reusable
+│   │   ├── Button.jsx
+│   │   ├── Input.jsx
+│   │   ├── Modal.jsx       # Modal popup tambah/edit/hapus
+│   │   ├── Navbar.jsx      # Header dengan info user & tombol logout
+│   │   ├── Sidebar.jsx     # Navigasi samping yang dinamis sesuai Role
+│   │   ├── Table.jsx       # Komponen tabel generic
+│   │   └── ProtectedRoute.jsx # Pelindung halaman berdasarkan role (Route Guard)
+│   │
+│   ├── contexts/           # Global State Management
+│   │   └── AuthContext.jsx # Menyimpan status login user, info profil, & fungsi logout
+│   │
+│   ├── services/           # Komunikasi API (HTTP Client)
+│   │   └── api.js          # Konfigurasi Axios instance & interceptor JWT
+│   │
+│   ├── pages/              # View/Halaman Utama Aplikasi
+│   │   ├── shared/         # Halaman umum
+│   │   │   ├── Login.jsx   # Form Login (menyimpan token & redirect ke dashboard)
+│   │   │   ├── NotFound.jsx # Halaman error 404
+│   │   │   └── Forbidden.jsx # Halaman akses ditolak (403)
+│   │   │
+│   │   ├── admin/          # Halaman khusus ADMIN
+│   │   │   ├── DashboardAdmin.jsx # Ringkasan cepat & pintasan
+│   │   │   ├── UserManagement.jsx # CRUD Kasir
+│   │   │   └── MenuManagement.jsx # CRUD Menu makanan/minuman/snack
+│   │   │
+│   │   └── kasir/          # Halaman khusus KASIR
+│   │       ├── DashboardKasir.jsx # Info transaksi hari ini
+│   │       ├── OrderTransaction.jsx # Menu transaksi (memilih menu, input jumlah, & checkout)
+│   │       └── OrderHistory.jsx # Riwayat pesanan & tombol cetak struk (invoice)
+│   │
+│   ├── utils/              # Helper Utility Functions
+│   │   ├── formatCurrency.js # Memformat angka ke Rupiah (Rp. 25.000)
+│   │   └── formatDate.js     # Memformat timestamp ke format lokal Indonesia
+│   │
+│   ├── App.jsx             # Pengaturan Rute Aplikasi (React Router DOM)
+│   ├── index.css           # Styling global & Tailwind directives
+│   └── main.jsx            # Entry point aplikasi React
+│
+├── package.json            # Daftar dependensi frontend
+├── tailwind.config.js      # Konfigurasi utility framework CSS
+└── vite.config.js          # Konfigurasi build tools Vite
+```
+
+---
+
+## 🔑 Implementasi Kunci Integrasi Frontend - Backend
+
+### A. Konfigurasi Axios Client (`src/services/api.js`)
+Gunakan Axios interceptor untuk menyisipkan header token JWT secara dinamis pada setiap request:
+```javascript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:3000/api', // sesuaikan dengan port backend
+});
+
+// Interceptor untuk menyisipkan JWT token ke header request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Interceptor untuk menangani error global (misal: token kedaluwarsa)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Hapus token dan redirect ke login jika unauthorized
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;
+```
+
+### B. Route Guard / Pelindung Rute (`src/components/ProtectedRoute.jsx`)
+Gunakan komponen wrapper untuk melindungi route agar tidak bisa diakses sembarang user:
+```jsx
+import React, { useContext } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
+
+const ProtectedRoute = ({ allowedRoles }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) return <div>Memuat Halaman...</div>;
+  if (!user) return <Navigate to="/login" replace />;
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/forbidden" replace />;
+  }
+
+  return <Outlet />;
+};
+
+export default ProtectedRoute;
+```
+
+### C. Alur Penggunaan Rute (`src/App.jsx`)
+Definisikan rute dengan mengelompokkannya berdasarkan otorisasi role:
+```jsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/ProtectedRoute';
+import Login from './pages/shared/Login';
+import Forbidden from './pages/shared/Forbidden';
+
+// Pages Admin
+import DashboardAdmin from './pages/admin/DashboardAdmin';
+import UserManagement from './pages/admin/UserManagement';
+import MenuManagement from './pages/admin/MenuManagement';
+
+// Pages Kasir
+import DashboardKasir from './pages/kasir/DashboardKasir';
+import OrderTransaction from './pages/kasir/OrderTransaction';
+import OrderHistory from './pages/kasir/OrderHistory';
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/forbidden" element={<Forbidden />} />
+
+        {/* 👑 RUTE KHUSUS ADMIN */}
+        <Route element={<ProtectedRoute allowedRoles={['ADMIN']} />}>
+          <Route path="/admin/dashboard" element={<DashboardAdmin />} />
+          <Route path="/admin/users" element={<UserManagement />} />
+          <Route path="/admin/menus" element={<MenuManagement />} />
+        </Route>
+
+        {/* 💼 RUTE KHUSUS KASIR */}
+        <Route element={<ProtectedRoute allowedRoles={['KASIR']} />}>
+          <Route path="/kasir/dashboard" element={<DashboardKasir />} />
+          <Route path="/kasir/transaksi" element={<OrderTransaction />} />
+          <Route path="/kasir/riwayat" element={<OrderHistory />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+```
+
+---
+
+## 💎 Tips Desain UI/UX Frontend yang Menarik
+Untuk nilai tambah dalam penilaian UKL, perhatikan estetika UI Anda:
+1. **Glassmorphism / Neon Accent**: Berikan sentuhan backdrop blur pada sidebar atau modal dengan Tailwind (`backdrop-blur-md bg-white/70`).
+2. **Micro-animations**: Tambahkan transisi halus saat tombol diarahkan (`hover:scale-[1.02] active:scale-[0.98] transition-all`).
+3. **Statistik Interaktif**: Pada dashboard Admin, gunakan grafik interaktif (seperti **Chart.js** atau **ApexCharts**) untuk menampilkan laporan bulanan dan menu terlaris yang diambil dari endpoint `/api/laporan`.
