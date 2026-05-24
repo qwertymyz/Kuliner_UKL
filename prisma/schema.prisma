@@ -1,0 +1,100 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── User & Auth ───────────────────────────────────────────
+model User {
+  id        Int      @id @default(autoincrement())
+  nama      String   @db.VarChar(100)
+  username  String   @unique @db.VarChar(50)
+  password  String   @db.VarChar(255)
+  role      Role     @default(KASIR)
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  pesanan Pesanan[]
+
+  @@map("users")
+}
+
+// ─── Menu ──────────────────────────────────────────────────
+model Menu {
+  id        Int      @id @default(autoincrement())
+  nama      String   @db.VarChar(100)
+  kategori  Kategori
+  harga     Int
+  tersedia  Boolean  @default(true)
+  gambarUrl String?  @map("gambar_url") @db.VarChar(255)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  itemPesanan ItemPesanan[]
+
+  @@map("menus")
+}
+
+// ─── Pesanan ───────────────────────────────────────────────
+model Pesanan {
+  id            Int           @id @default(autoincrement())
+  nomorMeja     Int?          @map("nomor_meja")
+  namaPelanggan String?       @map("nama_pelanggan") @db.VarChar(100)
+  status        StatusPesanan @default(PENDING)
+  totalHarga    Int           @map("total_harga")
+  metodeBayar   MetodeBayar?  @map("metode_bayar")
+  kasirId       Int?          @map("kasir_id")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+
+  kasir       User?         @relation(fields: [kasirId], references: [id])
+  itemPesanan ItemPesanan[]
+
+  @@map("pesanans")
+}
+
+// ─── Item Pesanan ──────────────────────────────────────────
+model ItemPesanan {
+  id        Int @id @default(autoincrement())
+  pesananId Int @map("pesanan_id")
+  menuId    Int @map("menu_id")
+  jumlah    Int
+  hargaSaat Int @map("harga_saat_pesan")
+
+  pesanan Pesanan @relation(fields: [pesananId], references: [id], onDelete: Cascade)
+  menu    Menu    @relation(fields: [menuId], references: [id])
+
+  @@map("item_pesanans")
+}
+
+// ─── Enums ─────────────────────────────────────────────────
+enum Role {
+  ADMIN
+  KASIR
+}
+
+enum Kategori {
+  MAKANAN
+  MINUMAN
+  SNACK
+}
+
+enum StatusPesanan {
+  PENDING
+  DIPROSES
+  SELESAI
+  DIBATALKAN
+}
+
+enum MetodeBayar {
+  TUNAI
+  QRIS
+  TRANSFER
+  KARTU
+}
