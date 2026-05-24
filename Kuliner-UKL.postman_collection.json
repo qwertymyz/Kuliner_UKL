@@ -1,0 +1,926 @@
+{
+  "info": {
+    "_postman_id": "42618844-325d-4f16-ac6b-9c7f2679f2ea",
+    "name": "Kuliner UKL Backend API",
+    "description": "Postman Collection for Kuliner Backend API v2. Includes authentication flow, user management, menu management, order placement, and reporting.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "description": "Endpoints related to user authentication and profile management.",
+      "item": [
+        {
+          "name": "Login Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.success && response.data && response.data.token) {",
+                  "    pm.collectionVariables.set(\"token\", response.data.token);",
+                  "    console.log(\"Token automatically updated to: \", response.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Log in as Admin. This request automatically saves the JWT token to the `token` collection variable upon success."
+          },
+          "response": []
+        },
+        {
+          "name": "Login Kasir",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.success && response.data && response.data.token) {",
+                  "    pm.collectionVariables.set(\"token\", response.data.token);",
+                  "    console.log(\"Token automatically updated to: \", response.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"kasir1\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Log in as Kasir. This request automatically saves the JWT token to the `token` collection variable upon success."
+          },
+          "response": []
+        },
+        {
+          "name": "Register New User (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Kasir Dua\",\n  \"username\": \"kasir2\",\n  \"password\": \"password123\",\n  \"role\": \"KASIR\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new user. Can only be accessed by accounts with role: ADMIN."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current Profile (Me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Get details of the currently logged-in user profile."
+          },
+          "response": []
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passwordLama\": \"password123\",\n  \"passwordBaru\": \"newpassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "change-password"
+              ]
+            },
+            "description": "Change the password of the currently logged-in user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users (Admin Only)",
+      "description": "User CRUD endpoints. Only accessible by ADMIN.",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Get list of all users."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Get user details by user ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Kasir Satu Updated\",\n  \"role\": \"KASIR\",\n  \"aktif\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Update user details. Admin cannot deactivate themselves."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Password User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"passwordBaru\": \"passwordbaru123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/users/:id/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id",
+                "reset-password"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Reset another user's password. Password must be at least 6 characters."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/users/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            },
+            "description": "Delete a user by ID. Admin cannot delete their own account."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Menus",
+      "description": "Menu CRUD endpoints. Read (GET) is available for all authenticated users, while write (POST, PUT, DELETE) is ADMIN only.",
+      "item": [
+        {
+          "name": "Get All Menus",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/menus?kategori=MAKANAN&tersedia=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus"
+              ],
+              "query": [
+                {
+                  "key": "kategori",
+                  "value": "MAKANAN",
+                  "description": "Filter by category: MAKANAN, MINUMAN, SNACK"
+                },
+                {
+                  "key": "tersedia",
+                  "value": "true",
+                  "description": "Filter by availability: true or false"
+                }
+              ]
+            },
+            "description": "Get all menu items with optional category and availability filters."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Menu By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/menus/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get menu item detail by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Menu (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Mendoan Tempe\",\n  \"kategori\": \"SNACK\",\n  \"harga\": 10000,\n  \"tersedia\": true,\n  \"gambarUrl\": \"https://example.com/mendoan.jpg\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/menus",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus"
+              ]
+            },
+            "description": "Create a new menu item. Category must be MAKANAN, MINUMAN, or SNACK. Harga must be positive."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Menu (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Mendoan Tempe Premium\",\n  \"kategori\": \"SNACK\",\n  \"harga\": 12000,\n  \"tersedia\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/menus/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update details of a menu item."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Menu (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/menus/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "menus",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete a menu item by ID."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Pesanan (Orders)",
+      "description": "Create and manage orders. Admin can view/edit all orders. Kasir can only view/edit orders that they created.",
+      "item": [
+        {
+          "name": "Get All Pesanan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pesanan?status=PENDING&tanggal=2026-05-24",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pesanan"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING",
+                  "description": "Filter by status: PENDING, DIPROSES, SELESAI, DIBATALKAN"
+                },
+                {
+                  "key": "tanggal",
+                  "value": "2026-05-24",
+                  "description": "Filter by date: YYYY-MM-DD"
+                }
+              ]
+            },
+            "description": "Get orders list. Admin sees all orders; Kasir only sees their own."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Pesanan By ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pesanan/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pesanan",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Get order details by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Pesanan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nomorMeja\": 4,\n  \"namaPelanggan\": \"Andi Wijaya\",\n  \"metodeBayar\": \"TUNAI\",\n  \"items\": [\n    {\n      \"menuId\": 1,\n      \"jumlah\": 2\n    },\n    {\n      \"menuId\": 5,\n      \"jumlah\": 3\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pesanan",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pesanan"
+              ]
+            },
+            "description": "Create a new order. Items must contain menuId and positive jumlah. MetodeBayar can be TUNAI, QRIS, TRANSFER, or KARTU."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Status Pesanan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"SELESAI\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/pesanan/:id/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pesanan",
+                ":id",
+                "status"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Update order status. Status can be PENDING, DIPROSES, SELESAI, or DIBATALKAN. Kasir can only update status for their own orders."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Pesanan (Admin Only)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/pesanan/:id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "pesanan",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Delete an order by ID. Only PENDING orders can be deleted by ADMIN."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Laporan (Admin Only)",
+      "description": "Statistical reporting and analytics endpoints. Only accessible by ADMIN.",
+      "item": [
+        {
+          "name": "Laporan Harian",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/laporan/harian?tanggal=2026-05-24",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "harian"
+              ],
+              "query": [
+                {
+                  "key": "tanggal",
+                  "value": "2026-05-24",
+                  "description": "Filter by date: YYYY-MM-DD (defaults to today if omitted)"
+                }
+              ]
+            },
+            "description": "Get daily report including total transactions, revenue, and itemized menu sales."
+          },
+          "response": []
+        },
+        {
+          "name": "Laporan Bulanan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/laporan/bulanan?tahun=2026&bulan=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "bulanan"
+              ],
+              "query": [
+                {
+                  "key": "tahun",
+                  "value": "2026",
+                  "description": "Year (e.g. 2026)"
+                },
+                {
+                  "key": "bulan",
+                  "value": "5",
+                  "description": "Month number (1-12)"
+                }
+              ]
+            },
+            "description": "Get monthly report including daily breakdowns, total transactions, and total revenue."
+          },
+          "response": []
+        },
+        {
+          "name": "Menu Terlaris",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/laporan/menu-terlaris?limit=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "laporan",
+                "menu-terlaris"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5",
+                  "description": "Limit the number of top items returned (defaults to 5)"
+                }
+              ]
+            },
+            "description": "Get top selling menus based on quantities sold."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
