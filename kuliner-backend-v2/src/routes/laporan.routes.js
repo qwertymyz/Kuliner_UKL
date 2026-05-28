@@ -11,5 +11,6 @@ router.use(verifyToken, authorizeRole("ADMIN"));
 router.get("/harian",        laporanController.laporanHarian);
 router.get("/bulanan",       laporanController.laporanBulanan);
 router.get("/menu-terlaris", laporanController.menuTerlaris);
+router.get("/",              laporanController.getSummary);
 
 module.exports = router;

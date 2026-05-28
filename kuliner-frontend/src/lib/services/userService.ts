@@ -15,29 +15,71 @@ export interface UpdateUserPayload {
   role?: 'ADMIN' | 'KASIR'
 }
 
+const mapUser = (backendUser: any): User => {
+  if (!backendUser) return null as any
+  return {
+    id: backendUser.id,
+    username: backendUser.username,
+    name: backendUser.nama || '',
+    role: backendUser.role,
+    createdAt: backendUser.createdAt,
+    updatedAt: backendUser.updatedAt,
+  }
+}
+
 export const userService = {
   getAll: async (params?: { role?: string; search?: string }) => {
-    const { data } = await api.get<PaginatedResponse<User>>('/users', { params })
-    return data
+    const response = await api.get<{ success: boolean; message: string; data: any[] }>('/users', { params })
+    return {
+      message: response.data.message,
+      data: (response.data.data || []).map(mapUser),
+      total: (response.data.data || []).length,
+      page: 1,
+      limit: (response.data.data || []).length,
+    }
   },
 
   getById: async (id: number) => {
-    const { data } = await api.get<ApiResponse<User>>(`/users/${id}`)
-    return data
+    const response = await api.get<{ success: boolean; message: string; data: any }>(`/users/${id}`)
+    return {
+      message: response.data.message,
+      data: mapUser(response.data.data),
+    }
   },
 
   create: async (payload: CreateUserPayload) => {
-    const { data } = await api.post<ApiResponse<User>>('/users', payload)
-    return data
+    const backendPayload = {
+      username: payload.username,
+      password: payload.password,
+      nama: payload.name,
+      role: payload.role,
+    }
+    const response = await api.post<{ success: boolean; message: string; data: any }>('/users', backendPayload)
+    return {
+      message: response.data.message,
+      data: mapUser(response.data.data),
+    }
   },
 
   update: async (id: number, payload: UpdateUserPayload) => {
-    const { data } = await api.put<ApiResponse<User>>(`/users/${id}`, payload)
-    return data
+    const backendPayload = {
+      username: payload.username,
+      password: payload.password || undefined,
+      nama: payload.name,
+      role: payload.role,
+    }
+    const response = await api.put<{ success: boolean; message: string; data: any }>(`/users/${id}`, backendPayload)
+    return {
+      message: response.data.message,
+      data: mapUser(response.data.data),
+    }
   },
 
   delete: async (id: number) => {
-    const { data } = await api.delete<ApiResponse<null>>(`/users/${id}`)
-    return data
+    const response = await api.delete<{ success: boolean; message: string }>(`/users/${id}`)
+    return {
+      message: response.data.message,
+      data: null,
+    }
   },
 }
