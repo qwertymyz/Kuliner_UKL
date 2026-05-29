@@ -36,6 +36,7 @@ export default function AdminLaporanPage() {
     }
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { loadLaporan() }, [])
 
   return (

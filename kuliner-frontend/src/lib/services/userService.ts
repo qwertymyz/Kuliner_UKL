@@ -54,7 +54,8 @@ export const userService = {
       nama: payload.name,
       role: payload.role,
     }
-    const response = await api.post<{ success: boolean; message: string; data: any }>('/users', backendPayload)
+    // ✅ Ganti /users → /auth/register
+    const response = await api.post<{ success: boolean; message: string; data: any }>('/auth/register', backendPayload)
     return {
       message: response.data.message,
       data: mapUser(response.data.data),
